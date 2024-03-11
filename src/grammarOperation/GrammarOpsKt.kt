@@ -5,6 +5,7 @@ import grammar.Nonterminal
 import grammar.Rule
 import grammar.Symbol
 import grammar.Terminal
+import java.util.*
 
 class GrammarOpsKt(private var g: Grammar) {
     var emptyNonterminals: MutableSet<Nonterminal>? = null
@@ -37,8 +38,8 @@ class GrammarOpsKt(private var g: Grammar) {
     }
 
     fun compute_first(symbol : Symbol) : MutableSet<Terminal> {
-        var first = mutableSetOf<Terminal>()
-        var rulesFromSymbol = g.rules.filter { it.lhs.name == symbol.name }
+        val first = mutableSetOf<Terminal>()
+        val rulesFromSymbol = g.rules.filter { it.lhs.name == symbol.name }
 
         for (rule in rulesFromSymbol) {
             first.addAll(computeFirstForRule(rule))
@@ -48,7 +49,7 @@ class GrammarOpsKt(private var g: Grammar) {
     }
 
     private fun computeFirstForRule(rule : Rule) : MutableSet<Terminal> {
-        var first = mutableSetOf<Terminal>()
+        val first = mutableSetOf<Terminal>()
         if (rule.rhs.isEmpty()) {
             return first
         }
@@ -69,6 +70,21 @@ class GrammarOpsKt(private var g: Grammar) {
             first.addAll(computeFirstForRule(changedRule))
         }
         return first
+    }
+
+    fun compute_follow() : MutableMap<Nonterminal, MutableSet<Terminal>> {
+        val followMap = mutableMapOf<Nonterminal, MutableSet<Terminal>>()
+        for (rule in g.rules) {
+            var alfa = rule
+            alfa.rhs = rule.rhs.drop(rule.rhs.indexOf(rule.lhs) + 1)
+            val first = computeFirstForRule(alfa)
+            if (followMap[alfa.lhs].isNullOrEmpty()) {
+                followMap[alfa.lhs] = first
+            } else {
+                followMap[alfa.lhs]?.addAll(first)
+            }
+        }
+        return followMap
     }
 
 }

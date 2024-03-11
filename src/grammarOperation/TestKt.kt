@@ -41,6 +41,16 @@ class TestKt {
             for (f in first) {
                 print(f.name + " ")
             }
+            println()
+
+            println("\nFOLLOW sets of this grammar are:")
+            for (entry in go.compute_follow()) {
+                print("${entry.key.name}: ")
+                for (v in entry.value) {
+                    print(v.name + " ")
+                }
+                println()
+            }
         }
     }
 }

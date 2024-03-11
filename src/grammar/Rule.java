@@ -22,5 +22,5 @@ public class Rule {
 
     private final Nonterminal lhs;
 
-    private final List<Symbol> rhs = new ArrayList<Symbol>();
+    public List<Symbol> rhs = new ArrayList<Symbol>();
 }
